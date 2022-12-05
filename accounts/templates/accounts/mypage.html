@@ -46,11 +46,17 @@
 
 
 <div class="card-big-box" id="cab1">
-  {% if user.profile_music_id %}
+  {% if user.profile_music %}
     <div>
-      <img src="https://i.ytimg.com/vi/{{ user.profile_music_id }}/hqdefault.jpg" alt="profile_music">
+      <div class="profile-music position-relative d-flex justify-content-center">
+        <div id="{{ user.profile_music.vidid }}" class="search-item d-none">이 태그를 지우면 안 됩니다.</div>
+        <img src="{{ user.profile_music.hqdefault }}" alt="profile_music">
+        <div class="position-absolute" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
+          <i class="bi bi-play-circle" style="font-size: 100px;"></i>
+        </div>
+      </div>
       <div>
-        {{ user.profile_music_title }} - {{ user.profile_music_channel }}
+        {{ user.profile_music.title }} - {{ user.profile_music.channel }}
       </div>
     </div>
   {% else %}

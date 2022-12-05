@@ -234,17 +234,25 @@
           // 프로필 뮤직 재생
           if (e.target.closest("div.profile-music")) {
             const profileMusic = e.target.closest("div.profile-music").querySelector('div.search-item')
-            console.log(videoIDs)
-            videoIDs.push(profileMusic.id)
-            console.log(videoIDs)
+            // 플레이리스트에 이미 존재하는 노래인지 판단
+            // 플레이리스트에 존재한다면
+            if (videoIDs.includes(profileMusic.id)) {
+              const idx = videoIDs.indexOf(profileMusic.id)
+              // 가장 마지막 인덱스가 아니라면 기존 인덱스 삭제하고 새로 추가
+              if (idx > -1 && idx < videoIDs.length - 1) {
+                videoIDs.splice(idx, 1)
+                videoIDs.push(profileMusic.id)
+              }
+            // 플레이리스트에 없다면 추가
+            } else {
+              videoIDs.push(profileMusic.id)
+            }
+
             window.sessionStorage.setItem('videoIDs', JSON.stringify(videoIDs))
-            console.log(window.sessionStorage.getItem('videoIDs'))
-            console.log('before')
             player.loadPlaylist( {
               playlist:videoIDs,
               index: videoIDs.length - 1
             } );
-            console.log('after')
           }
         })
       </script>
