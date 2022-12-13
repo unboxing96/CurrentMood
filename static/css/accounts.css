@@ -1,3 +1,6 @@
+.body {
+	width: 800px;
+}
 /* signup */
 .signup {
 	display: flex;
@@ -235,7 +238,7 @@
 .user-info {
 	text-align: start;
 	padding-bottom: 3vw;
-	font-size: 2rem;
+	font-size: 1.7rem;
 }
 .user-info__follow {
 	display: flex;
@@ -248,7 +251,7 @@
 	display: flex;
 	padding: 1em 0;
 	justify-content: space-evenly;
-	font-size: 3vw;
+	font-size: 2vw;
 }
 .form_radio_btn input[type=radio] {
   display: none;
@@ -269,7 +272,7 @@
 	list-style: none;
 	margin: 8px 0px;
 	border-radius: 5px;
-	font-size: 1.5rem;
+	font-size: 1rem;
 	padding: 0.5vw 0px;	
 	transition-duration: 0.3s;
 }
@@ -293,7 +296,6 @@
 }
 .box__menu li {
 	padding: 8px 30px;
-	width: 100%;
 }
 .profile-music img {
 	width: 50vw;
@@ -316,17 +318,18 @@
 	padding: 5px 8px;
 	border: 0;
 }
+.like_song img {
+	width: 10vw;
+	border-radius: 0.5vw;
+}
+.article_list img {
+	width: 10vw;
+	border-radius: 0.7vw;
+}
 /* 프로필뮤직*/
 .container {
 	width: 40vw;
 }
-/* .search_box {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	text-align: center;
-	padding: 20px;
-} */
 .search-off {
 	display: none;
 }
@@ -361,10 +364,6 @@ h5 {
 	overflow-x: hidden;
 	text-overflow: ellipsis;
 }
-/*
-.music_img {
-	width: 100%;
-} */
 .music_title {
 	width: 180px;
 	white-space: nowrap;
@@ -381,10 +380,6 @@ h5 {
 	font-size: 1vw;
 	text-align: start;
 }
-/* #search-form {
-	margin-bottom: 0;
-	text-align: center;
-} */
 .search-btn {
 	display: none;
 }
@@ -404,18 +399,6 @@ h5 {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-/* #search-form {
-	position: relative;
-	display: flex;
-	align-items: center;
-} */
-/* #search-form i {
-	position: absolute;
-	right: 6%;
-	top: 11%;
-	z-index: 8;
-	color: #2f2e2f;
-} */
 ::placeholder {
 	text-align: center;
 }
@@ -435,6 +418,7 @@ h5 {
 	display: flex;
 	flex-direction: column;
 }
+
 /* my_following_page */
 .following,
 .follower {
@@ -491,6 +475,7 @@ ul {
 	.box__menu li {
 		padding: 8px 10px;
 	}
+	
 	/* 프로필뮤직 */
 	.container {
 		width: 50vw;
@@ -507,8 +492,14 @@ ul {
 	.music_channel {
 		width: 25vw;
 	}
+	.form_radio_btn {
+		font-size: 4vw;
+	}
 }
 @media screen and (max-width: 500px) {
+	.form_radio_btn {
+		font-size: 4vw;
+	}
 	.user-info__follow {
 		flex-direction: column;
 	}
@@ -518,9 +509,6 @@ ul {
 	.search-item {
 		height: 70px;
 	}
-	/* .search__input {
-		width: 15rem;
-	} */
 	.container {
 		width: 80vw;
 	}
@@ -538,14 +526,6 @@ ul {
 		font-size: 1.5rem;
 	}
 }
-
-/* .form_radio_btn label {
-  display: block;
-  border-radius: 10px;
-  margin: 0 auto;
-  height: -webkit-fill-available;
-  line-height: 45px;
-} */
 
 .mylist-btn {
 	display: flex;
