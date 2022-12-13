@@ -23,9 +23,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script defer="defer" src="{% static 'js/script.js' %}"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <!-- 지도 -->
     <script type="module" src="{% static 'js/location.js' %}?128"></script>
-    {% comment %} <script type="module" src="{% static 'js/gps.js' %}?10"></script> {% endcomment %}
+    <script type="module" src="{% static 'js/gps.js' %}?16"></script>
     <script type="text/javascript"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQjvkVCuRWteXvMvioRJZ0P24bi_XSHaw&libraries=places&region=KR&callback=initMap&v=weekly" defer></script>
     <!-- <script type="module" src='/static/js/location.js'></script> -->
     <!-- favicon 임시 -->
     <link rel="shortcut icon" href="#">
@@ -37,6 +39,8 @@
   </head>
   
   <body>
+    <form action="">{% csrf_token %}</form>
+    <input type="hidden">
     <!-- nav -->
     <header>
       <nav class="navbar bg-dark">
@@ -87,7 +91,7 @@
     </header>
 
     <div id="wrap">
-      <section>
+      <section class="accounts">
         {% block body %}{% endblock body %}
       </section>
     </div>
@@ -136,6 +140,8 @@
       
       <script>
         // navbar에 현재위치 가져오기
+        const currentPlace = document.querySelector("#currentPlace")
+        currentPlace.innerHTML = localStorage.getItem("address")
         // 2. iframe api 불러오기
         var tag = document.createElement('script');
 
@@ -469,6 +475,43 @@
               videoIDs.push(articleMusic.id)
               videoTitles.push(articleTitle)
               videoChannels.push(articleChannel)
+            }
+
+            window.sessionStorage.setItem('videoIDs', JSON.stringify(videoIDs))
+            window.sessionStorage.setItem('videoTitles', JSON.stringify(videoTitles))
+            window.sessionStorage.setItem('videoChannels', JSON.stringify(videoChannels))
+
+            player.loadPlaylist( {
+              playlist:videoIDs,
+              index: videoIDs.length - 1
+            } );
+          }
+
+          // 디테일 페이지 뮤직 재생
+          if (e.target.closest("div.detail-music")) {
+            slideUp(bottomPlayer, duration=500)
+            const detailMusic = e.target.closest("div.detail-music").querySelector('input.vidid')
+            const detailTitle = e.target.closest("div.detail-music").querySelector('input.title').id
+            const detailChannel = e.target.closest("div.detail-music").querySelector('input.channel').id
+
+            // 플레이리스트에 이미 존재하는 노래인지 판단
+            // 플레이리스트에 존재한다면
+            if (videoIDs.includes(detailMusic.id)) {
+              const idx = videoIDs.indexOf(detailMusic.id)
+              // 가장 마지막 인덱스가 아니라면 기존 인덱스 삭제하고 새로 추가
+              if (idx > -1 && idx < videoIDs.length - 1) {
+                videoIDs.splice(idx, 1)
+                videoIDs.push(detailMusic.id)
+                videoTitles.splice(idx, 1)
+                videoTitles.push(detailTitle)
+                videoChannels.splice(idx, 1)
+                videoChannels.push(detailChannel)
+              }
+            // 플레이리스트에 없다면 추가
+            } else {
+              videoIDs.push(detailMusic.id)
+              videoTitles.push(detailTitle)
+              videoChannels.push(detailChannel)
             }
 
             window.sessionStorage.setItem('videoIDs', JSON.stringify(videoIDs))
