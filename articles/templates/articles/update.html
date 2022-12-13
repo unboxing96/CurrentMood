@@ -3,107 +3,144 @@
 
 {% block body %}
 <div class="container">
-  <h1>update</h1>
-  <form id="search-form">
-    {% csrf_token %}
-    <label for="search-input">사연 노래</label>
-    <div class="d-flex justify-content-center mb-3">
-      <input id="search-input" type="text" class="col-10" placeholder='{{ article.song }}'>
-      <button type="submit" class="col-2">search</button>
-    </div>
-  </form>
-  <div id="search-list" class="search-list">
+  <div class="text-center m-3">
+    <h4>지금 당신의 분위기를</h4>
+    <h4>표현해 주세요</h4>
   </div>
-  <form id="article-form" method="POST" data-article-pk={{ article.pk }} data-song-vidid={{ article.song.vidid }}>
-    {% csrf_token %}
-    <input type="hidden" id="vidid" name="vidid" value="{{ article.song.vidid }}">
-    <input type="hidden" id="vidtitle" name="vidtitle" value="">
-    <input type="hidden" id="channel" name="channel" value="">
-    <input type="hidden" id="hqdefault" name="hqdefault" value="">
-    <input type="hidden" id="default" name="default" value="">
-    <input type="hidden" id="mqdefault" name="mqdefault" value="">
-    <input type="hidden" id="place" name="place" value="{{ article.place }}">
-    <div>
-      <label for="place">사연 장소</label>
-      <input id="" name="" type="text" class="w-100 mb-3" value='{{ article.place }}' disabled readonly>
+  <div class="d-flex justify-content-center">
+    <div class="p-3 d-flex flex-column justify-content-center align-items-center" style="width: 330px;">
+      <form id="search-form" class="w-100">
+        {% csrf_token %}
+        {% comment %} <label for="search-input">사연 노래</label> {% endcomment %}
+        <div class="d-flex justify-content-center mb-3">
+          <input id="search-input" type="text" class="col-12" placeholder='{{ article.song }}'>
+          <button type="submit" class="col-2 d-none">검색</button>
+        </div>
+      </form>
+      <div id="search-list" class="search-list">
+      </div>
+      <form id="article-form" method="POST" class="w-100" data-article-pk={{ article.pk }} data-song-vidid={{ article.song.vidid }}>
+        {% csrf_token %}
+        <input type="hidden" id="vidid" name="vidid" value="{{ article.song.vidid }}">
+        <input type="hidden" id="vidtitle" name="vidtitle" value="">
+        <input type="hidden" id="channel" name="channel" value="">
+        <input type="hidden" id="hqdefault" name="hqdefault" value="">
+        <input type="hidden" id="default" name="default" value="">
+        <input type="hidden" id="mqdefault" name="mqdefault" value="">
+        <div class="d-flex flex-column align-items-center mb-3">
+          <!-- 지도 -->
+          {% comment %} <label for="place">사연 장소</label> {% endcomment %}
+          <div id="map-btn" class="d-flex justify-content-center mb-1" style="cursor: pointer;"><i class="bi bi-geo-fill"></i> 현재 위치 재설정</div>
+          <input id="search-place-input" type="text" id="place" name="place" class="w-100" readonly value="{{ article.place }}">
+          <div id="map" class="mb-3" style="width: 295px; height: 195px;"></div>
+          <div class="text-center">
+            <p class="m-0">추천 위치 리스트</p>
+            <hr class="my-1">
+            <p id="place-1" class="mb-1" style="cursor: pointer;" onclick="placeInput(this.innerText)"></p>
+            <p id="place-2" class="mb-1" style="cursor: pointer;" onclick="placeInput(this.innerText)"></p>
+            <p id="place-3" class="mb-1" style="cursor: pointer;" onclick="placeInput(this.innerText)"></p>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center mb-3">
+          <label for="content"></label>
+          <textarea id="content" name="content" cols="30" rows="5" class="col-12">{{ article.content }}</textarea>
+        </div>
+        <div class="d-flex justify-content-center">
+          <button type="submit" class="create__button" style="
+          background-color: #75037F;
+          color: var(--text-color);
+          border: none;
+          width: 22rem;
+          padding: 1em ;
+          border-radius: 2rem;
+          margin-top: 1em;
+          width: 70vw;">공유하기</button>
+        </div>
+      </form>
     </div>
-    <div>
-      <label for="content">사연 내용</label>
-      <textarea id="content" name="content" cols="10" rows="3" class="w-100 mb-3">{{ article.content }}</textarea>
-    </div>
-    <input type="submit" value="OK">
-  </form>
+  </div>
 </div>
-  <!-- 검색 스크립트 -->
-  <script>
-    const searchForm = document.querySelector("#search-form")
-    searchForm.addEventListener('submit', function(event) {
-      event.preventDefault()
-      const kw = searchForm.querySelector("#search-input").value
-      getSearchList(kw)
-    })
-  
-    function getSearchList(kw) {
-      const apiKey = "AIzaSyC6_bB2PiPp_Vtf8cPdnhoQ-hzL4gNVFIE"
-      axios.get('https://www.googleapis.com/youtube/v3/search', {
-        params: {
-          key: apiKey,
-          part: "snippet",
-          order: "viewCount",
-          q: kw,
-          type: "video",
-          videoEmbeddable: "true",
-          videoSyndicated: "true",
-        }
-      })
-        .then(function (response) {
-          console.log('good', response)
-          const searchList = document.querySelector('#search-list')
-          searchList.innerHTML = ''
-          const searchItems = response.data.items
-          const searchItemsList = []
-          searchItems.forEach((searchItem) => {
-            searchList.innerHTML += `
-            <div id="` + searchItem.id.videoId + `" class="search-item d-flex gap-3">
-              <img src="`+ searchItem.snippet.thumbnails.default.url + `" alt="">
-              <div>
-                <h5>`+ searchItem.snippet.title +`</h5>
-                <div class="d-flex gap-3">
-                  <p>`+ searchItem.snippet.channelTitle +`</p>
-                </div>
-              </div>
-            </div>
-            `
-          })
-        })
-    }
-  </script>
-  <!-- 검색폼 스크립트 -->
-  <script>
-    const articleForm = document.querySelector('#article-form')
+<!-- 검색 스크립트 -->
+<script>
+  const searchForm = document.querySelector("#search-form")
+  searchForm.addEventListener('submit', function(event) {
+    event.preventDefault()
+    const kw = searchForm.querySelector("#search-input").value
+    getSearchList(kw)
+  })
 
-    document.addEventListener('click', function(e) {
-      if (e.target.closest("div.search-list")) {
-        // 폼에 담아서 뷰로 넘겨주기
-        const searchItem = e.target.closest('div.search-item')
-        const ArticleMusicId = searchItem.id
-        const ArticleMusicTitle = searchItem.querySelector('h5').innerText
-        const ArticleMusicChannelTitle = searchItem.querySelector('p').innerText
-  
-        articleForm.querySelector('#vidid').value = ArticleMusicId
-        articleForm.querySelector('#vidtitle').value = ArticleMusicTitle
-        articleForm.querySelector('#channel').value = ArticleMusicChannelTitle
-        articleForm.querySelector('#hqdefault').value = `https://i.ytimg.com/vi/${ArticleMusicId}/hqdefault.jpg`
-        articleForm.querySelector('#default').value = `https://i.ytimg.com/vi/${ArticleMusicId}/default.jpg`
-        articleForm.querySelector('#mqdefault').value = `https://i.ytimg.com/vi/${ArticleMusicId}/mqdefault.jpg`
-  
-        // 검색 폼 초기화해주기
-        const searchList = document.querySelector('#search-list')
-        searchList.innerHTML = ''
-        const searchInput = document.querySelector("#search-input")
-        searchInput.value = ArticleMusicTitle + ' - ' + ArticleMusicChannelTitle
+  function getSearchList(kw) {
+    const apiKey = "AIzaSyDglrT26TS8c3g7EhbV-wEZeGZnIiK2ObE"
+    axios.get('https://www.googleapis.com/youtube/v3/search', {
+      params: {
+        key: apiKey,
+        part: "snippet",
+        order: "viewCount",
+        q: kw,
+        type: "video",
+        videoEmbeddable: "true",
+        videoSyndicated: "true",
       }
     })
-  </script>
+      .then(function (response) {
+        console.log('good', response)
+        const searchList = document.querySelector('#search-list')
+        searchList.innerHTML = ''
+        const searchItems = response.data.items
+        const searchItemsList = []
+        searchItems.forEach((searchItem) => {
+          searchList.innerHTML += `
+          <div id="` + searchItem.id.videoId + `" class="search-item d-flex gap-3">
+            <img src="`+ searchItem.snippet.thumbnails.default.url + `" alt="">
+            <div>
+              <h5>`+ searchItem.snippet.title +`</h5>
+              <div class="d-flex gap-3">
+                <p>`+ searchItem.snippet.channelTitle +`</p>
+              </div>
+            </div>
+          </div>
+          `
+        })
+      })
+  }
+</script>
+<!-- 검색폼 스크립트 -->
+<script>
+  const articleForm = document.querySelector('#article-form')
 
+  document.addEventListener('click', function(e) {
+    if (e.target.closest("div.search-list")) {
+      // 폼에 담아서 뷰로 넘겨주기
+      const searchItem = e.target.closest('div.search-item')
+      const ArticleMusicId = searchItem.id
+      const ArticleMusicTitle = searchItem.querySelector('h5').innerText
+      const ArticleMusicChannelTitle = searchItem.querySelector('p').innerText
+
+      articleForm.querySelector('#vidid').value = ArticleMusicId
+      articleForm.querySelector('#vidtitle').value = ArticleMusicTitle
+      articleForm.querySelector('#channel').value = ArticleMusicChannelTitle
+      articleForm.querySelector('#hqdefault').value = `https://i.ytimg.com/vi/${ArticleMusicId}/hqdefault.jpg`
+      articleForm.querySelector('#default').value = `https://i.ytimg.com/vi/${ArticleMusicId}/default.jpg`
+      articleForm.querySelector('#mqdefault').value = `https://i.ytimg.com/vi/${ArticleMusicId}/mqdefault.jpg`
+
+      // 검색 폼 초기화해주기
+      const searchList = document.querySelector('#search-list')
+      searchList.innerHTML = ''
+      const searchInput = document.querySelector("#search-input")
+      searchInput.value = ArticleMusicTitle + ' - ' + ArticleMusicChannelTitle
+    }
+  })
+</script>
+<!-- 지도 스크립트 -->
+<script>
+  const mapBtn = document.querySelector('#map-btn')
+  mapBtn.addEventListener('click', function (e) {
+    initMap()
+  })
+  
+  function placeInput(place) {
+    const searchPlaceInput = document.querySelector('#search-place-input')
+    searchPlaceInput.value = place
+  }
+</script>
 {% endblock body %}

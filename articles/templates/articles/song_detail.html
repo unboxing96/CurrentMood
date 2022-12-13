@@ -11,7 +11,12 @@
     <div class="card--image card--div">
       {% comment %} <img src="{% static 'image/bbibbi.jpg' %}" alt="" id="getColor"> {% endcomment %}
       {% comment %} <p class="card--image--url d-none">{{ song.vidid }}</p> {% endcomment %}
-      <img src="https://i.ytimg.com/vi/{{ song.vidid }}/maxresdefault.jpg" alt="" id="getColor">
+      <div class="detail-music">
+        <img src="https://i.ytimg.com/vi/{{ song.vidid }}/maxresdefault.jpg" alt="" id="getColor">
+        <input id="{{ song.vidid }}" class="vidid" type="hidden">
+        <input id="{{ song.title }}" class="title" type="hidden">
+        <input id="{{ song.channel }}" class="channel" type="hidden">
+      </div>
     </div>
 
     <div class="card--info info--1" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="{{ song.title }}">
@@ -26,13 +31,54 @@
       </div>
     </div>
   </div>
-  
+
+  <!-- 좋아요 -->
+  <div class="songDetail--likeBtn mt-5 mb-3">
+    <form class='like-forms' data-song-id="{{ song.pk }}">
+      {% csrf_token %}
+      {% if request.user in song.like_users.all %}
+        <button type="submit" class="d-flex text-center" style="border: 0px; background: transparent;"
+          id='like-btn-{{ song.pk }}'>
+          <i class="fa-solid fa-heart" id='heart-{{ song.pk }}' style="color: #7E00E4; font-size: 2.5rem; z-index: 1;" name="heart"></i> 
+        </button>
+      {% else %}
+        <button type="submit" class="d-flex text-center" style="border: 0px; background: transparent;"
+          id='like-btn-{{ song.pk }}'>
+          <i class="fa-regular fa-heart" id='heart-{{ song.pk }}' style="color: #7E00E4; font-size: 2.5rem;" name="heart"></i> 
+        </button>
+      {% endif %}
+    </form>
+  </div>
+
+
+  {% comment %} 글 작성 버튼 {% endcomment %}
+  <div class="private-player--write position-absolute end-0 me-2">
+    <a href="{% url 'articles:create' %}">
+      <lord-icon
+          src="https://cdn.lordicon.com/wloilxuq.json"
+          trigger="loop-on-hover"
+          delay="500"
+          colors="primary:#ffffff,secondary:#6c16c7"
+          style="width:10vw; height:10vh; transform: rotate(30deg);">
+      </lord-icon>
+    </a>
+  </div>
+
+  <div>
+    <h6 class="position-absolute start-0 border-bottom pb-2 ps-2" style="width: 100%;">작성된 글</h6>
+  </div>
+
   {% comment %} 사연 {% endcomment %}
+  {% if articles %}
   <div class="article_cards-list mt-5 row-cols-3">
     {% for article in articles %}
-      <div class="article_card mx-1">
+      <div class="article_card mt-5 mx-1">
         <div class="article_card_image">
+          {% if article.user.user_img %}
           <img src="{{ article.user.user_img.url }}">
+          {% else %}
+          <img src="{{ article.song.hqdefault }}" alt="">
+          {% endif %}
         </div>
         <a href="{% url 'articles:detail' article.pk %}">
           <div class="article_card_title title-white pt-3">
@@ -42,10 +88,14 @@
       </div>
     {% endfor %}
   </div>
+  {% else %}
+  <a href="">
+    <div class="bg-dark pt-2 d-flex justify-content-center align-items-center" style="width: 80vw; height: 100px; margin-top: 70px;">
+      <p>첫 번째 글을 작성해 주세요.</p>
+    </div>
+  </a>
+  {% endif %}
 </div>
-
-
-<!-- 좋아요 -->
 
 <div>
   <form class='like-forms' data-song-id="{{ song.pk }}">
@@ -87,7 +137,7 @@
   {% endcomment %}
 
 
-  /* 
+  
   var rgb = getAverageRGB(document.querySelector('#getColor'));
   console.log(rgb);
 
@@ -149,7 +199,7 @@
     rgb.b = ~~(rgb.b/count);
     
     return rgb;
-  } */
+  } 
 </script>
 
 <script>
@@ -183,13 +233,14 @@
           console.log(isLiked)
 
           if (isLiked === true) {
-            heart.classList.add('bi-heart-fill')
-            heart.classList.remove('bi-heart')
+            heart.classList.add('fa-solid')
+            heart.classList.remove('fa-regular')
             likeCount.innerText = response.data.likeCount
             console.log('true')
           } else {
-            heart.classList.remove('bi-heart-fill')
-            heart.classList.add('bi-heart')
+            heart.classList.remove('liked')
+            heart.classList.remove('fa-solid')
+            heart.classList.add('fa-regular')
             likeCount.innerText = response.data.likeCount
             console.log('false')
           }
