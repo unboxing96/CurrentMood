@@ -23,9 +23,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script defer="defer" src="{% static 'js/script.js' %}"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <!-- 지도 -->
     <script type="module" src="{% static 'js/location.js' %}?128"></script>
-    <script type="module" src="{% static 'js/gps.js' %}?10"></script>
+    <script type="module" src="{% static 'js/gps.js' %}?16"></script>
     <script type="text/javascript"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQjvkVCuRWteXvMvioRJZ0P24bi_XSHaw&libraries=places&region=KR&callback=initMap&v=weekly" defer></script>
     <!-- <script type="module" src='/static/js/location.js'></script> -->
     <!-- favicon 임시 -->
     <link rel="shortcut icon" href="#">
@@ -35,6 +37,8 @@
   </head>
   
   <body>
+    <form action="">{% csrf_token %}</form>
+    <input type="hidden">
     <!-- nav -->
     <header>
       <nav class="navbar bg-dark">
@@ -140,6 +144,8 @@
       
       <script>
         // navbar에 현재위치 가져오기
+        const currentPlace = document.querySelector("#currentPlace")
+        currentPlace.innerHTML = localStorage.getItem("address")
         // 2. iframe api 불러오기
         var tag = document.createElement('script');
 
