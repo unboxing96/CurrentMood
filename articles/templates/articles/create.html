@@ -135,11 +135,13 @@
 </script>
 <!-- 지도 스크립트 -->
 <script>
+  const coords = localStorage.getItem('crds').split(",").map(Number)
+  const userCoords = { lat: coords[0], lng: coords[1] };
+  let map, infoWindow;
   const mapBtn = document.querySelector('#map-btn')
   mapBtn.addEventListener('click', function (e) {
     initMap()
   })
-  
   function placeInput(place) {
     const searchPlaceInput = document.querySelector('#search-place-input')
     searchPlaceInput.value = place
