@@ -20,11 +20,11 @@ import json
 # Create your views here.
 def private(request):
     if request.method == "POST":
-        place = request.POST.get('place-to-view-input', '')
+        place = request.POST.get("place-to-view-input", "")
         comment_form = CommentForm()
 
         song_queryset = (
-            Article.objects.filter(place__icontains=place)
+            Article.objects.filter(place__icontains="서울")
             .values("song")
             .annotate(Count("id"))
         )
@@ -34,9 +34,11 @@ def private(request):
             song_list.append(song)
 
         # 해당 위치 작성 글 가져오기
-        articles = Article.objects.filter(place__icontains=place).order_by("-pk")
+        articles = Article.objects.filter(place__icontains="서울").order_by("-pk")
         if articles:
-            top_article = Article.objects.filter(place__icontains=place).order_by("-pk")[0]
+            top_article = Article.objects.filter(place__icontains="서울").order_by("-pk")[
+                0
+            ]
         else:
             top_article = ""
 
@@ -48,11 +50,11 @@ def private(request):
             "place": place,
         }
         return render(request, "articles/private.html", context)
-    place = request.COOKIES.get('key')
+    place = request.COOKIES.get("key")
     print(place)
     comment_form = CommentForm()
     song_queryset = (
-        Article.objects.filter(place__icontains=place)
+        Article.objects.filter(place__icontains="서울")
         .values("song")
         .annotate(Count("id"))
     )
@@ -62,9 +64,9 @@ def private(request):
         song_list.append(song)
 
     # 해당 위치 작성 글 가져오기
-    articles = Article.objects.filter(place__icontains=place).order_by("-pk")
+    articles = Article.objects.filter(place__icontains="서울").order_by("-pk")
     if articles:
-        top_article = Article.objects.filter(place__icontains=place).order_by("-pk")[0]
+        top_article = Article.objects.filter(place__icontains="서울").order_by("-pk")[0]
     else:
         top_article = ""
 
